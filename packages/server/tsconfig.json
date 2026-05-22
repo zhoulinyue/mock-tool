@@ -4,7 +4,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "moduleResolution": "node16",
-    "module": "commonjs",         // 关键：ts-node 的 commonjs 模式
+    "module": "Node16",         // 关键：ts-node 的 commonjs 模式
     "esModuleInterop": true,
     "resolveJsonModule": true
   }
