@@ -1,0 +1,5 @@
+# 启动 server
+```
+cd packages/server
+pnpm dev
+```

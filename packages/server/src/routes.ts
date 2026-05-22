@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
-import { projectDB, Project  } from './db';
+import { projectDB, Project  } from './db.ts';
 
 const router = Router();
 
