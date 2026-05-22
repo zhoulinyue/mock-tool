@@ -1,12 +1,18 @@
-import low from 'lowdb';
-import FileSync from 'lowdb/adapters/FileSync';
+import { LowSync } from 'lowdb';
+import { JSONFileSync } from 'lowdb/node';
 import { v4 as uuid } from 'uuid';
 
-const adapter = new FileSync('db.json');
-const db = low(adapter);
+interface Database {
+  projects: Project[];
+}
 
-// 默认数据结构：项目列表
-db.defaults({ projects: [] }).write();
+const adapter = new JSONFileSync<Database>('db.json');
+const db = new LowSync<Database>(adapter, { projects: [] });
+
+db.read();
+if (!db.data) {
+  db.data = { projects: [] };
+}
 
 export interface MockRule {
   id: string;
@@ -24,17 +30,23 @@ export interface Project {
 }
 
 export const projectDB = {
-  getAll: () => db.get('projects').value(),
-  getByKey: (key: string) => db.get('projects').find({ key }).value(),
+  getAll: () => db.data!.projects,
+  getByKey: (key: string) => db.data!.projects.find((project) => project.key === key),
   create: (data: Partial<Project>) => {
-    const project = { id: uuid(), rules: [], ...data };
-    db.get('projects').push(project).write();
+    const project: Project = { id: uuid(), rules: [], ...data } as Project;
+    db.data!.projects.push(project);
+    db.write();
     return project;
   },
   update: (id: string, data: Partial<Project>) => {
-    db.get('projects').find({ id }).assign(data).write();
+    const project = db.data!.projects.find((item) => item.id === id);
+    if (project) {
+      Object.assign(project, data);
+      db.write();
+    }
   },
   remove: (id: string) => {
-    db.get('projects').remove({ id }).write();
+    db.data!.projects = db.data!.projects.filter((project) => project.id !== id);
+    db.write();
   }
 };

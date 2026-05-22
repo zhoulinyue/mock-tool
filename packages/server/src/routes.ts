@@ -46,7 +46,8 @@ router.post('/api/projects/:id/rules', (req, res) => {
 
 router.put('/api/projects/:id/rules/:ruleId', (req, res) => {
   const project = projectDB.getAll().find((p: Project) => p.id === req.params.id);
-  const rule = project?.rules.find((r: any) => r.id === req.params.ruleId);
+  if (!project) return res.status(404).json({ error: 'project not found' });
+  const rule = project.rules.find((r: any) => r.id === req.params.ruleId);
   if (!rule) return res.status(404).end();
   Object.assign(rule, req.body);
   projectDB.update(req.params.id, { rules: project.rules });
