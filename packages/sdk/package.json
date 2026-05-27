@@ -1,0 +1,11 @@
+{
+  "name": "mock-interceptor-sdk",
+  "version": "1.0.0",
+  "main": "dist/mock-interceptor-sdk.umd.js",
+  "module": "dist/mock-interceptor-sdk.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  }
+}
