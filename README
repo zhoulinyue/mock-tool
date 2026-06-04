@@ -1,5 +1,129 @@
-# 启动 server
+# Mock Tool
+
+一个轻量级的前端 Mock 数据工具，包含：
+
+- **管理平台**：可视化配置项目与接口规则（Vue3 + Element Plus）
+- **后端服务**：提供项目和规则的增删改查 API，以及供 SDK 拉取规则的接口（Express + lowdb）
+- **浏览器拦截 SDK**：拦截 `fetch` 和 `XMLHttpRequest`，根据规则返回假数据
+
+## 项目结构
+mock-tool/
+├── packages/
+│ ├── server/ # 后端服务（端口 3001）
+│ ├── admin/ # 管理平台（端口 5173）
+│ └── sdk/ # Mock 拦截 SDK（构建为 UMD/ESM）
+├── package.json
+├── pnpm-workspace.yaml
+└── README.md
+
+
+## 环境要求
+
+- Node.js >= 16
+- pnpm >= 8
+
+## 快速开始
+
+### 1. 安装依赖
+
+```bash
+cd mock-tool
+pnpm install
 ```
-cd packages/server
+
+### 2. 启动开发服务
+
+```bash
 pnpm dev
 ```
+该命令会同时启动：
+
+管理平台：http://localhost:5173
+
+后端服务：http://localhost:3001
+
+### 3、构建 SDK
+SDK 需要手动构建才会生成可在浏览器中使用的文件：
+```bash
+cd packages/sdk
+pnpm build  
+```
+构建产物在 packages/sdk/dist/ 中，主要使用 mock-interceptor-sdk.umd.js。
+
+### 4、在管理平台中创建项目和规则
+- 打开浏览器访问 http://localhost:5173
+
+- 点击 “新建项目”，填写：
+
+名称：任意（如“测试项目”）
+
+唯一标识：用于 SDK 初始化，例如 test-project
+
+- 在新创建的项目行中点击 “规则” 按钮
+
+点击 “添加规则”，填写：
+
+方法：GET
+
+URL：/api/example（支持正则，如 /api/user/\d+）
+
+响应数据：{"message": "Hello from mock!"}
+
+状态码：200
+
+点击确定后，规则即生效（SDK 每次初始化时会拉取最新规则，如需热更新可重新初始化）
+
+### 5、在浏览器中使用 SDK
+
+- 确保后端服务已启动（pnpm dev 或单独启动 packages/server）
+
+- 将构建好的 SDK 文件拷贝到你的测试目录，例如：
+
+```
+test-html/
+├── index.html
+└── mock-interceptor-sdk.umd.js
+```
+- 在 index.html 中编写以下内容：
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mock HTML 测试</title>
+</head>
+<body>
+  <h1>Mock 测试页面</h1>
+  <div id="output"></div>
+
+  <script src="./mock-interceptor-sdk.umd.js"></script>
+  <script>
+    // 初始化 SDK，指定创建项目时填的唯一标识和后台地址
+    MockInterceptorSDK.initMock({
+      projectKey: 'test-project',       // 与平台中的 key 一致
+      baseURL: 'http://localhost:3001'  // 后台管理服务地址
+    }).then(() => {
+      console.log('Mock 规则加载完成');
+
+      // 发起业务请求（注意使用相对路径或当前域名下的路径）
+      fetch('/api/example')
+        .then(res => res.json())
+        .then(data => {
+          console.log('拦截成功，Mock 数据：', data);
+          document.getElementById('output').innerText = JSON.stringify(data);
+        })
+        .catch(err => console.error('请求失败：', err));
+    });
+  </script>
+</body>
+</html>
+
+```
+- 访问文件，打开浏览器控制台，你会看到：
+
+一个成功的请求拉取规则（Network 面板中可见 http://localhost:3001/api/project/test-project/rules）
+
+随后 fetch('/api/example') 并不会发出真实的网络请求，而是直接返回你配置的假数据
+
+页面中会显示 {"message":"Hello from mock!"}

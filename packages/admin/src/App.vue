@@ -84,7 +84,6 @@ const editRules = async (project: Project) => {
 
 const addRule = async () => {
   if (!currentProject.value) return;
-  // 这里可以从弹窗输入，为简化直接演示硬编码规则
   await createRule(currentProject.value.id, {
     method: 'GET',
     url: '/api/example',

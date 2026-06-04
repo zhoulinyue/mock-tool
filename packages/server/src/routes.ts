@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { v4 as uuid } from 'uuid';
-import { projectDB, Project  } from './db.ts';
+import { projectDB, Project  } from './db.js';
 
 const router = Router();
 
@@ -60,6 +60,12 @@ router.delete('/api/projects/:id/rules/:ruleId', (req, res) => {
   project.rules = project.rules.filter((r: any) => r.id !== req.params.ruleId);
   projectDB.update(req.params.id, { rules: project.rules });
   res.json({ success: true });
+});
+// =========== 获取某个项目下所有规则 ===========
+router.get('/api/projects/:id/rules', (req, res) => {
+  const project = projectDB.getAll().find((p: Project) => p.id === req.params.id);
+  if (!project) return res.status(404).json({ error: 'project not found' });
+  res.json(project.rules);
 });
 
 export default router;
