@@ -4,26 +4,23 @@
       "id": "475443d6-5462-49c6-851b-f63ecb88d6b7",
       "rules": [
         {
-          "id": "8085f13a-d320-4896-be13-e589974ef2d4",
+          "id": "9789aa6e-5010-4b22-b3d0-4c39c3e53c49",
           "method": "GET",
-          "url": "/api/example",
+          "url": "/api",
           "responseData": {
-            "message": "mock data"
-          },
-          "statusCode": 200
-        },
-        {
-          "id": "845418df-2641-4f3f-b89e-1abb52a2309a",
-          "method": "GET",
-          "url": "/api/example",
-          "responseData": {
-            "message": "mock data"
+            "key": "111"
           },
           "statusCode": 200
         }
       ],
       "name": "test",
       "key": "test-project"
+    },
+    {
+      "id": "5d8b83ea-db22-40e3-a678-b5ee9f142d84",
+      "rules": [],
+      "name": "test2",
+      "key": "test2"
     }
   ]
 }

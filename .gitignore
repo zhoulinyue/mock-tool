@@ -1,4 +1,5 @@
 /node_modules/
 /packages/server/node_modules/
+/packages/server/db.json
 /packages/admin/node_modules/
 /packages/sdk/node_modules/

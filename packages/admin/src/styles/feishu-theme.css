@@ -1,0 +1,154 @@
+/* 飞书风格基础色板 */
+:root {
+  /* 品牌色：飞书蓝 */
+  --el-color-primary: #3370FF;
+  --el-color-primary-light-3: #5C8AFF;
+  --el-color-primary-light-5: #85A5FF;
+  --el-color-primary-light-7: #ADC2FF;
+  --el-color-primary-light-9: #D6E0FF;
+  --el-color-primary-dark-2: #2859CC;
+
+  /* 成功色 */
+  --el-color-success: #34C759;
+  /* 警告色 */
+  --el-color-warning: #FF9500;
+  /* 危险色 */
+  --el-color-danger: #FF3B30;
+  /* 信息色 */
+  --el-color-info: #8E8E93;
+
+  /* 字体色 */
+  --el-text-color-primary: #1F2329;
+  --el-text-color-regular: #3B3F47;
+  --el-text-color-secondary: #646A73;
+  --el-text-color-placeholder: #8F959E;
+
+  /* 边框色 */
+  --el-border-color: #DEE0E3;
+  --el-border-color-light: #E5E6EB;
+  --el-border-color-lighter: #F0F1F5;
+
+  /* 背景色 */
+  --el-bg-color: #FFFFFF;
+  --el-bg-color-page: #F5F6F7;
+  --el-bg-color-overlay: #FFFFFF;
+  --el-fill-color-blank: #FFFFFF;
+  --el-fill-color-light: #F5F6F7;
+
+  /* 圆角：飞书风格小圆角 */
+  --el-border-radius-base: 6px;
+  --el-border-radius-small: 4px;
+  --el-border-radius-round: 20px;
+
+  /* 阴影：轻量 */
+  --el-box-shadow-light: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --el-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  /* 字体家族 */
+  --el-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 表格紧凑样式 */
+.el-table {
+  --el-table-border-color: var(--el-border-color-light);
+  --el-table-header-bg-color: #F9FAFB;
+  --el-table-row-hover-bg-color: #F5F7FA;
+  font-size: 13px;
+}
+
+.el-table th.el-table__cell {
+  background-color: var(--el-table-header-bg-color);
+  color: var(--el-text-color-secondary);
+  font-weight: 500;
+}
+
+/* 按钮圆角 */
+.el-button {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.el-button--primary {
+  background-color: var(--el-color-primary);
+  border-color: var(--el-color-primary);
+}
+
+.el-button--primary:hover {
+  background-color: var(--el-color-primary-light-3);
+  border-color: var(--el-color-primary-light-3);
+}
+
+/* 输入框/选择框 */
+.el-input__wrapper {
+  border-radius: 6px;
+  box-shadow: 0 0 0 1px var(--el-border-color) inset;
+}
+
+.el-input__wrapper:hover {
+  box-shadow: 0 0 0 1px var(--el-border-color) inset;
+}
+
+.el-input__wrapper.is-focus {
+  box-shadow: 0 0 0 1px var(--el-color-primary) inset;
+}
+
+.el-select .el-input__wrapper {
+  border-radius: 6px;
+}
+
+/* 对话框 */
+.el-dialog {
+  border-radius: 12px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+}
+
+.el-dialog__header {
+  padding: 20px 24px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.el-dialog__body {
+  padding: 16px 24px;
+}
+
+.el-dialog__footer {
+  padding: 12px 24px 20px;
+}
+
+/* 标签 */
+.el-tag {
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* 折叠面板 (手风琴) */
+.el-collapse {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--el-border-color-light);
+}
+
+.el-collapse-item__header {
+  background-color: #FAFBFC;
+  padding: 0 16px;
+  font-size: 14px;
+  height: 44px;
+  line-height: 44px;
+  border-bottom: 1px solid var(--el-border-color-light);
+}
+
+.el-collapse-item__wrap {
+  border-bottom: 1px solid var(--el-border-color-light);
+  background-color: #FFFFFF;
+}
+
+.el-collapse-item__content {
+  padding: 16px;
+  font-size: 13px;
+}
+
+/* 数字输入框 */
+.el-input-number .el-input__wrapper {
+  border-radius: 6px;
+}
