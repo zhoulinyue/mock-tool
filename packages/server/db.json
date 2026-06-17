@@ -17,10 +17,18 @@
       "key": "test-project"
     },
     {
-      "id": "5d8b83ea-db22-40e3-a678-b5ee9f142d84",
-      "rules": [],
-      "name": "test2",
-      "key": "test2"
+      "id": "8c309423-3a03-437a-887c-b4e57b1b9129",
+      "rules": [
+        {
+          "id": "07673e7d-c591-4b0d-b9a4-635be5e6935d",
+          "method": "GET",
+          "url": "Refoss.DeviceInfo.Get",
+          "responseData": {},
+          "statusCode": 200
+        }
+      ],
+      "name": "refoss-monorepo",
+      "key": "refoss"
     }
   ]
 }

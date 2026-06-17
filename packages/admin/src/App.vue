@@ -28,7 +28,7 @@
 
       <!-- 新建项目对话框 -->
       <el-dialog v-model="addProjectVisible" title="新建项目">
-        <el-form :model="projectForm">
+        <el-form :model="projectForm" label-position="left" label-width="80px">
           <el-form-item label="名称">
             <el-input v-model="projectForm.name" />
           </el-form-item>
@@ -71,18 +71,18 @@
                 <el-tag type="info" size="small"
                   >状态码 {{ rule.statusCode }}</el-tag
                 >
-              </div>
-              <div class="rule-actions" @click.stop>
-                <el-button size="small" text @click="editRule(rule.id)"
-                  >编辑</el-button
-                >
-                <el-button
-                  size="small"
-                  text
-                  type="danger"
-                  @click="delRule(rule.id)"
-                  >删除</el-button
-                >
+                <div class="rule-actions" @click.stop>
+                  <el-button size="small" text @click="editRule(rule.id)"
+                    >编辑</el-button
+                  >
+                  <el-button
+                    size="small"
+                    text
+                    type="danger"
+                    @click="delRule(rule.id)"
+                    >删除</el-button
+                  >
+                </div>
               </div>
             </template>
 
@@ -102,10 +102,12 @@
                   <el-input v-model="editingRule.url" />
                 </el-form-item>
                 <el-form-item label="响应数据">
-                  <el-input
+                  <Codemirror
                     v-model="editingRule.responseDataStr"
-                    type="textarea"
-                    :rows="4"
+                    :extensions="jsonExtensions"
+                    :style="{ height: '120px', width: '100%' }"
+                    placeholder='{"key":"value"}'
+                    :tabSize="2"
                   />
                 </el-form-item>
                 <el-form-item label="状态码">
@@ -168,10 +170,12 @@
             <el-input v-model="ruleForm.url" />
           </el-form-item>
           <el-form-item label="响应数据">
-            <el-input
+            <Codemirror
               v-model="ruleForm.responseData"
-              type="textarea"
-              :rows="4"
+              :extensions="jsonExtensions"
+              :style="{ height: '120px', width: '100%' }"
+              placeholder='{"key":"value"}'
+              :tabSize="2"
             />
           </el-form-item>
           <el-form-item label="状态码">
@@ -260,6 +264,11 @@ import {
   updateRule,
 } from "./api";
 import type { Project, MockRule } from "./types";
+import { Codemirror } from "vue-codemirror"; // 注意是具名导出
+import { json } from "@codemirror/lang-json";
+import { oneDark } from "@codemirror/theme-one-dark";
+
+const jsonExtensions = [json(), oneDark];
 
 // --- 布局相关 ---
 const usageVisible = ref(false);

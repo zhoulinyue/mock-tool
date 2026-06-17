@@ -73,7 +73,8 @@ URL：/api/example（支持正则，如 /api/user/\d+）
 
 点击确定后，规则即生效（SDK 每次初始化时会拉取最新规则，如需热更新可重新初始化）
 
-### 5、在浏览器中使用 SDK
+### 5、使用
+#### （1）在HTML中使用 SDK
 
 - 确保后端服务已启动（pnpm dev 或单独启动 packages/server）
 
@@ -127,3 +128,14 @@ test-html/
 随后 fetch('/api/example') 并不会发出真实的网络请求，而是直接返回你配置的假数据
 
 页面中会显示 {"message":"Hello from mock!"}
+
+#### （2）在 svelte 项目中使用
+- 在 index.html中引入 mock-interceptor-sdk.umd.js，需要放在项目 bundle.js 前面
+- main.js中使用 mock sdk：
+```
+MockInterceptorSDK.initMock({
+  projectKey: 'refoss',
+    baseURL: 'http://localhost:3001'
+});
+
+```

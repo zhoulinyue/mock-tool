@@ -1,4 +1,8 @@
 /* 飞书风格基础色板 */
+html, body {
+  margin: 0;
+  padding: 0;
+}
 :root {
   /* 品牌色：飞书蓝 */
   --el-color-primary: #3370FF;
