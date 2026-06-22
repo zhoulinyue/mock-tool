@@ -101,16 +101,63 @@
                 <el-form-item label="URL">
                   <el-input v-model="editingRule.url" />
                 </el-form-item>
-                <el-form-item label="响应数据">
-                  <Codemirror
-                    v-model="editingRule.responseDataStr"
-                    :extensions="jsonExtensions"
-                    :style="{ height: '120px', width: '100%' }"
-                    placeholder='{"key":"value"}'
-                    :tabSize="2"
-                  />
+                <el-form-item label="Mock 模式">
+                  <el-radio-group v-model="editingRule.mode">
+                    <el-radio value="static">静态数据</el-radio>
+                    <el-radio value="proxy">代理转发并修改</el-radio>
+                  </el-radio-group>
                 </el-form-item>
-                <el-form-item label="状态码">
+                <!-- 静态模式 -->
+                <template v-if="editingRule.mode === 'static'">
+                  <el-form-item label="响应数据">
+                    <Codemirror
+                      v-model="editingRule.responseDataStr"
+                      :extensions="jsonExtensions"
+                      :style="{ height: '120px', width: '100%' }"
+                      placeholder='{"key":"value"}'
+                      :tabSize="2"
+                    />
+                  </el-form-item>
+                </template>
+                <!-- 代理模式 -->
+                <template v-if="editingRule.mode === 'proxy'">
+                  <el-form-item label="真实接口地址">
+                    <el-input
+                      v-model="editingRule.proxyTarget"
+                      placeholder="https://api.example.com/user/1"
+                    />
+                  </el-form-item>
+                  <el-form-item label="字段替换规则">
+                    <div
+                      v-for="(rep, index) in editingRule.proxyReplacements"
+                      :key="index"
+                      style="margin-bottom: 10px; display: flex; gap: 8px"
+                    >
+                      <el-input
+                        v-model="rep.path"
+                        placeholder="字段路径，如 data.name"
+                        style="flex: 1"
+                      />
+                      <el-input
+                        v-model="rep.value"
+                        placeholder="替换值"
+                        style="flex: 1"
+                      />
+                      <el-button
+                        size="small"
+                        type="danger"
+                        @click="editingRule.proxyReplacements.splice(index, 1)"
+                        >删除</el-button>
+                    </div>
+                    <el-button
+                      size="small"
+                      @click="
+                        editingRule.proxyReplacements.push({ path: '', value: '' })
+                      "
+                      >添加替换</el-button>
+                  </el-form-item>
+                </template>
+                <el-form-item>
                   <el-input-number
                     v-model="editingRule.statusCode"
                     :min="100"
@@ -169,15 +216,71 @@
           <el-form-item label="URL">
             <el-input v-model="ruleForm.url" />
           </el-form-item>
-          <el-form-item label="响应数据">
-            <Codemirror
-              v-model="ruleForm.responseData"
-              :extensions="jsonExtensions"
-              :style="{ height: '120px', width: '100%' }"
-              placeholder='{"key":"value"}'
-              :tabSize="2"
-            />
+          <el-form-item label="Mock 模式">
+            <el-radio-group v-model="ruleForm.mode">
+              <el-radio value="static">静态数据</el-radio>
+              <el-radio value="proxy">代理转发并修改</el-radio>
+            </el-radio-group>
           </el-form-item>
+          <!-- 静态模式 -->
+          <template v-if="ruleForm.mode === 'static'">
+            <el-form-item label="响应数据">
+              <Codemirror
+                v-model="ruleForm.responseData"
+                :extensions="jsonExtensions"
+                :style="{ height: '120px', width: '100%' }"
+                placeholder='{"key":"value"}'
+                :tabSize="2"
+              />
+            </el-form-item>
+          </template>
+          <!-- 代理模式 -->
+          <template v-if="ruleForm.mode === 'proxy'">
+            <el-form-item label="真实接口地址">
+              <el-input
+                v-model="ruleForm.proxyTarget"
+                placeholder="https://api.example.com/user/1"
+              />
+            </el-form-item>
+            <el-form-item label="字段替换规则">
+              <div
+                v-for="(rep, index) in ruleForm.proxyReplacements"
+                :key="index"
+                style="margin-bottom: 10px; display: flex; gap: 8px"
+              >
+                <el-input
+                  v-model="rep.path"
+                  placeholder="字段路径，如 data.name"
+                  style="flex: 1"
+                />
+                <el-input
+                  v-model="rep.value"
+                  placeholder="替换值"
+                  style="flex: 1"
+                />
+                <el-button
+                  size="small"
+                  type="danger"
+                  @click="ruleForm.proxyReplacements.splice(index, 1)"
+                  >删除</el-button
+                >
+              </div>
+              <el-button
+                size="small"
+                @click="
+                  ruleForm.proxyReplacements.push({ path: '', value: '' })
+                "
+                >添加替换</el-button
+              >
+            </el-form-item>
+            <el-form-item label="返回状态码">
+              <el-input-number
+                v-model="ruleForm.statusCode"
+                :min="100"
+                :max="599"
+              />
+            </el-form-item>
+          </template>
           <el-form-item label="状态码">
             <el-input-number
               v-model="ruleForm.statusCode"
@@ -268,6 +371,11 @@ import { Codemirror } from "vue-codemirror"; // 注意是具名导出
 import { json } from "@codemirror/lang-json";
 import { oneDark } from "@codemirror/theme-one-dark";
 
+interface ProxyReplacement {
+  path: string;
+  value: string;
+}
+
 const jsonExtensions = [json(), oneDark];
 
 // --- 布局相关 ---
@@ -313,6 +421,9 @@ const editingRule = ref<{
   url: string;
   responseDataStr: string;
   statusCode: number;
+  mode: "static" | "proxy";
+  proxyTarget: string;
+  proxyReplacements: ProxyReplacement[];
 } | null>(null);
 
 const editRules = async (project: Project) => {
@@ -338,8 +449,15 @@ const editRule = (ruleId: string) => {
     id: rule.id,
     method: rule.method,
     url: rule.url,
-    responseDataStr: JSON.stringify(rule.responseData, null, 2),
+    mode: rule.mode || "static",
     statusCode: rule.statusCode,
+    responseDataStr: JSON.stringify(rule.responseData, null, 2) || "",
+    proxyTarget: rule.proxyTarget || "",
+    proxyReplacements: (rule.proxyReplacements || []).map((rep: any) => ({
+      path: rep.path,
+      value:
+        typeof rep.value === "string" ? rep.value : JSON.stringify(rep.value),
+    })),
   };
   editingRuleId.value = rule.id;
 };
@@ -385,11 +503,22 @@ const methodTagType = (method: string) => {
 
 // --- 新增规则 ---
 const addRuleVisible = ref(false);
-const ruleForm = ref({
+const ruleForm = ref<{
+  method: string;
+  url: string;
+  responseData: string;
+  statusCode: number;
+  mode: "static" | "proxy";
+  proxyTarget: string;
+  proxyReplacements: ProxyReplacement[];
+}>({
   method: "GET",
   url: "",
   responseData: "",
   statusCode: 200,
+  mode: "static",
+  proxyTarget: "",
+  proxyReplacements: [],
 });
 const showAddRule = () => {
   ruleForm.value = {
@@ -397,17 +526,44 @@ const showAddRule = () => {
     url: "",
     responseData: "",
     statusCode: 200,
+    mode: "static",
+    proxyTarget: "",
+    proxyReplacements: [] as ProxyReplacement[],
   };
   addRuleVisible.value = true;
 };
 const submitAddRule = async () => {
   if (!currentProject.value) return;
   let parsedData: any;
-  try {
-    parsedData = JSON.parse(ruleForm.value.responseData);
-  } catch {
-    ElMessage.error("响应数据不是合法的 JSON 格式");
-    return;
+  const payload: any = {
+    method: ruleForm.value.method,
+    url: ruleForm.value.url,
+    mode: ruleForm.value.mode,
+    statusCode: ruleForm.value.statusCode,
+  };
+
+  if (ruleForm.value.mode === "static") {
+    try {
+      payload.responseData = JSON.parse(ruleForm.value.responseData);
+    } catch {
+      ElMessage.error("响应数据不是合法的 JSON");
+      return;
+    }
+  } else {
+    payload.proxyTarget = ruleForm.value.proxyTarget;
+    // 将 proxyReplacements 中的 value 尝试解析为 JSON（若可能）
+    payload.proxyReplacements = ruleForm.value.proxyReplacements.map((rep) => ({
+      path: rep.path,
+      value: tryParseJSON(rep.value),
+    }));
+  }
+  // 辅助函数：尝试解析 JSON，解析失败则保持字符串
+  function tryParseJSON(str: string) {
+    try {
+      return JSON.parse(str);
+    } catch {
+      return str;
+    }
   }
   await createRule(currentProject.value.id, {
     method: ruleForm.value.method,

@@ -48,11 +48,37 @@ function interceptFetch() {
     const url = request.url;
     const method = request.method;
     const rule = findRule(method, url);
-    if (rule) {
-      const body =
-        typeof rule.responseData === 'object'
-          ? JSON.stringify(rule.responseData)
-          : rule.responseData;
+    if (rule.mode === 'proxy' && rule.proxyTarget) {
+      try {
+        // 1. 请求真实接口
+        const realResponse = await originalFetch(rule.proxyTarget, {
+          method: 'GET', // 实际可能需要根据原请求方法调整
+          headers: { 'Content-Type': 'application/json' }
+        });
+        let data = await realResponse.json();
+
+        // 2. 执行字段替换
+        if (rule.proxyReplacements) {
+          for (const rep of rule.proxyReplacements) {
+            setNestedValue(data, rep.path, rep.value);
+          }
+        }
+
+        // 3. 返回替换后的数据
+        return new Response(JSON.stringify(data), {
+          status: rule.statusCode || realResponse.status,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      } catch (err) {
+        console.error('[MockSDK] Proxy error:', err);
+        // 代理失败可回退到返回空数据或错误
+        return new Response(JSON.stringify({ error: 'Proxy failed' }), { status: 502 });
+      }
+    } else {
+      // 静态模式（原有逻辑）
+      const body = typeof rule.responseData === 'object'
+        ? JSON.stringify(rule.responseData)
+        : rule.responseData;
       return new Response(body, {
         status: rule.statusCode || 200,
         headers: { 'Content-Type': 'application/json' }
@@ -60,6 +86,15 @@ function interceptFetch() {
     }
     return originalFetch.call(window, input, init);
   };
+}
+function setNestedValue(obj: any, path: string, value: any) {
+  const keys = path.split('.');
+  let current = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!current[keys[i]]) current[keys[i]] = {};
+    current = current[keys[i]];
+  }
+  current[keys[keys.length - 1]] = value;
 }
 
 /** 拦截 XMLHttpRequest */

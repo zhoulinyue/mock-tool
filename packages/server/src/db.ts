@@ -16,10 +16,22 @@ if (!db.data) {
 
 export interface MockRule {
   id: string;
-  method: string;        // GET / POST / PUT...
-  url: string;           // 支持正则，如 /api/users
-  responseData: any;     // 返回的 JSON 数据
-  statusCode: number;    // 返回状态码
+  method: string;
+  url: string;
+
+  // 模式：'static' 为直接返回固定数据，'proxy' 为代理并修改
+  mode: 'static' | 'proxy';
+
+  // 静态模式下的响应数据（mode=static 时使用）
+  responseData?: any;
+  statusCode: number;
+
+  // 代理模式配置（mode=proxy 时使用）
+  proxyTarget?: string;          // 真实接口地址，如 https://api.example.com/user/1
+  proxyReplacements?: {          // 字段替换列表
+    path: string;                // 要替换的字段路径，如 "data.name" 或 "result.age"
+    value: any;                  // 替换后的值
+  }[];
 }
 
 export interface Project {

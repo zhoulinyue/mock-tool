@@ -25,6 +25,12 @@
           "url": "Refoss.DeviceInfo.Get",
           "responseData": {},
           "statusCode": 200
+        },
+        {
+          "id": "bb2c3baf-d668-40c3-9eb4-ada25ebc93b0",
+          "method": "GET",
+          "url": "/api/static",
+          "statusCode": 200
         }
       ],
       "name": "refoss-monorepo",
