@@ -139,3 +139,9 @@ MockInterceptorSDK.initMock({
 });
 
 ```
+
+### 6、启动单元测试
+根目录下执行
+```
+pnpm test
+```
