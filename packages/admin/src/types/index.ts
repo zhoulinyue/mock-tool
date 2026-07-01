@@ -4,13 +4,15 @@ interface ProxyReplacement {
 }
 export interface MockRule {
   id: string;
-  method: string;
+  type: 'http' | 'ws';
+  method?: string;
   url: string;
-  responseData: any;
+  wsMethod?: string;
+  mode: 'static' | 'proxy';
+  responseData?: any;
   statusCode: number;
-  mode: "static" | "proxy";
   proxyTarget?: string;
-  proxyReplacements?: ProxyReplacement[];
+  proxyReplacements?: { path: string; value: any }[];
 }
 
 export interface Project {

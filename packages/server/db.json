@@ -1,40 +1,104 @@
 {
   "projects": [
     {
-      "id": "475443d6-5462-49c6-851b-f63ecb88d6b7",
+      "id": "b903ebed-3137-4409-b8c6-91d55171f816",
       "rules": [
         {
-          "id": "9789aa6e-5010-4b22-b3d0-4c39c3e53c49",
+          "id": "d28328dd-0555-468f-a099-df92459d9614",
+          "type": "http",
           "method": "GET",
-          "url": "/api",
+          "url": "/api/example",
+          "mode": "static",
+          "statusCode": 200,
           "responseData": {
-            "key": "111"
-          },
-          "statusCode": 200
+            "key": "1234",
+            "key2": "zly2222222222"
+          }
         }
       ],
-      "name": "test",
-      "key": "test-project"
+      "name": "html",
+      "key": "html-test"
     },
     {
-      "id": "8c309423-3a03-437a-887c-b4e57b1b9129",
+      "id": "9c98be64-e1e0-4b76-a8db-ebffd5d9b06e",
       "rules": [
         {
-          "id": "07673e7d-c591-4b0d-b9a4-635be5e6935d",
-          "method": "GET",
-          "url": "Refoss.DeviceInfo.Get",
-          "responseData": {},
-          "statusCode": 200
-        },
-        {
-          "id": "bb2c3baf-d668-40c3-9eb4-ada25ebc93b0",
-          "method": "GET",
-          "url": "/api/static",
-          "statusCode": 200
+          "id": "d0d82253-68a6-4531-b1e4-f3f1c2ed05ee",
+          "type": "ws",
+          "url": "ws://192.168.4.20/rpc",
+          "wsMethod": "Refoss.DeviceInfo.Get",
+          "mode": "static",
+          "statusCode": 200,
+          "responseData": {
+            "result": {
+              "name": "mock"
+            }
+          }
         }
       ],
       "name": "refoss-monorepo",
-      "key": "refoss"
+      "key": "refoss-monorepo"
+    },
+    {
+      "id": "ffc03e5c-7e00-4296-8c16-6a767f764656",
+      "rules": [
+        {
+          "id": "6020753d-6779-456f-827a-086a8051c8b6",
+          "type": "http",
+          "method": "GET",
+          "url": "/api/v1/blog/countryCodeList",
+          "mode": "static",
+          "statusCode": 200,
+          "responseData": {
+            "Code": 200,
+            "Msg": "ok",
+            "MessageId": "messageID",
+            "Timestamp": 1782287683,
+            "Data": {
+              "countryCode": [
+                {
+                  "name": "周麟越",
+                  "country_code": "US"
+                },
+                {
+                  "name": "Germany",
+                  "country_code": "DE"
+                },
+                {
+                  "name": "France",
+                  "country_code": "FR"
+                },
+                {
+                  "name": "United Kingdom",
+                  "country_code": "GB"
+                },
+                {
+                  "name": "Italy",
+                  "country_code": "IT"
+                },
+                {
+                  "name": "Canada",
+                  "country_code": "CA"
+                },
+                {
+                  "name": "Australia",
+                  "country_code": "AU"
+                },
+                {
+                  "name": "Spain",
+                  "country_code": "ES"
+                },
+                {
+                  "name": "Others",
+                  "country_code": "Ots"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "name": "meross_official_frontend_v3",
+      "key": "meross_official_frontend_v3"
     }
   ]
 }
